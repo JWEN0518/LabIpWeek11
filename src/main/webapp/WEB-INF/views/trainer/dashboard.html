@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>Trainer Dashboard</title>    
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 20px; }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        .dashboard-card:hover { transform: translateY(-2px); }
+        
+        .stat-label { color: #6c757d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #007bff; }
+        
+        .profile-header { border-bottom: 2px solid #007bff; padding-bottom: 15px; margin-bottom: 20px; }
+        .profile-name { font-size: 1.8rem; font-weight: bold; color: #333; margin: 0; }
+        .profile-role { color: #007bff; font-weight: 500; font-size: 1.1rem; }
+        
+        .info-label { font-weight: bold; color: #555; width: 140px; display: inline-block; }
+        .info-row { margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        
+        .btn-action { width: 100%; margin-bottom: 10px; padding: 15px; font-size: 1.1rem; border-radius: 8px; }
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments :: main-menu}"></div>
+    
+    <div class="container mt-4">
+        <div th:replace="~{fragments :: flash-messages}"></div>
+
+    <div class="container" style="max-width: 1100px;">
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="profile-name" th:text="${'Welcome back, ' + trainer.name}">Welcome back, Trainer</h1>
+                            <span class="profile-role" th:text="${trainer.specialization}">Specialization Here</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success" th:if="${trainer.isActive}">Active Status</span>
+                            <span class="badge bg-danger" th:unless="${trainer.isActive}">Inactive</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="dashboard-card text-center">
+                    <div class="stat-label">Experience</div>
+                    <div class="stat-value">
+                        <span th:text="${trainer.yearsOfExperience}">0</span> <small style="font-size:1rem;">Years</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="dashboard-card text-center">
+                    <div class="stat-label">Active Plans</div>
+                    <div class="stat-value" th:text="${planCount}">0</div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="dashboard-card text-center">
+                    <div class="stat-label">Top Certification</div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #333; margin-top: 10px;" 
+                         th:text="${trainer.certification}">
+                        None
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="dashboard-card">
+                    <h4 class="profile-header">👤 My Profile Details</h4>
+                    
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span th:text="${trainer.email}">email@example.com</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">Phone:</span>
+                        <span th:text="${trainer.phone}">+123456789</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">Username:</span>
+                        <span th:text="${trainer.username}">user123</span>
+                    </div>
+
+                    <div class="mt-4">
+                        <span class="info-label" style="margin-bottom: 5px; display:block;">Biography:</span>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; color: #555;">
+                            <span th:text="${trainer.bio}">No biography provided yet.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="dashboard-card">
+                    <h4 class="profile-header">⚡ Quick Actions</h4>
+                    
+                    <a th:href="@{/trainer/plans}" class="btn btn-primary btn-action">
+                        📋 Manage Plans
+                    </a>
+
+                    <hr>
+                    
+                    <a th:href="@{/logout}" class="btn btn-outline-danger btn-action">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

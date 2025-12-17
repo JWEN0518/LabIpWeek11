@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>HealthHub@UTM : Enroll in a Program</title>
+    <style>
+        body { background-color: #f6f8fb; padding: 20px; }
+        .card { max-width: 800px; margin: 20px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+        .program-item { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 20px; padding: 20px; transition: box-shadow 0.3s; }
+        .program-item:hover { box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1); }
+        .program-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .program-name { font-size: 1.4em; font-weight: 600; color: #007bff; }
+        .program-price { font-size: 1.5em; font-weight: bold; color: #28a745; }
+        .program-details span { display: inline-block; margin-right: 15px; font-size: 0.9em; color: #6c757d; }
+        .program-details .badge { font-size: 0.85em; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+
+    <div th:replace="~{fragments :: main-menu}"></div>
+    
+    <div class="container mt-4">
+        <div th:replace="~{fragments :: flash-messages}"></div>
+
+
+<div class="card">
+    <h1><i class="fas fa-running"></i> Program Enrollment</h1>
+    <p class="subtitle">Select a program below to begin your enrollment.</p>
+
+    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+    
+    <form th:action="@{/member/enroll}" method="post">
+        
+        <div th:if="${programs == null or programs.isEmpty()}" class="alert alert-info">
+            No active programs are available for enrollment at this time.
+        </div>
+        
+        <div th:if="${programs != null and !programs.isEmpty()}">
+            <div th:each="program : ${programs}" class="program-item">
+                <div class="program-header">
+                    <span class="program-name" th:text="${program.name}">Program Name</span>
+                    <span class="program-price" th:text="'RM ' + ${#numbers.formatDecimal(program.price, 1, 2)}">RM 150.00</span>
+                </div>
+                
+                <p th:text="${program.description}"></p>
+                
+                <div class="program-details">
+                    <span>Duration: <strong th:text="${program.durationWeeks} + ' weeks'">8 weeks</strong></span>
+                    <span>Level: 
+                        <span th:class="|badge bg-info|" th:text="${program.difficultyLevel ?: 'N/A'}">Intermediate</span>
+                    </span>
+                    <span th:if="${program.trainer != null}">Trainer: 
+                        <strong th:text="${program.trainer.name}">Jane Doe</strong>
+                    </span>
+                </div>
+                
+                <button type="submit" name="programId" th:value="${program.id}" class="btn btn-primary mt-3 w-100">
+                    Enroll Now
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script> 
+</body>
+</html>

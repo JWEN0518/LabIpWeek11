@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common-head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthHub@UTM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .btn-logout-nav {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .btn-logout-nav:hover {
+            background-color: #c82333;
+            color: white;
+        }
+        .navbar-right-section { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .user-info-badge { 
+            margin-right: 8px; 
+        }
+        .role-badge { 
+            margin-left: 6px; 
+            font-size: 0.85em; 
+            padding: 2px 6px; 
+            border-radius: 12px; 
+            background: #e9ecef; 
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+
+<div th:fragment="main-menu" class="mb-4">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <!--  -->
+            <a class="navbar-brand" th:href="@{/home}">
+                🏥 HealthHub@UTM
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    
+                    <th:block th:if="${session.userrole == 'admin'}">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/admin/dashboard}">🏠 Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/admin/person/list}">👥 Members</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/admin/categories/list}">📂 Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/admin/programs/list}">📋 Programs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/admin/reports}">📊 Reports</a>
+                        </li>
+                    </th:block>
+                    
+                    <th:block th:if="${session.userrole == 'trainer'}">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/trainer/dashboard}">🏠 Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/trainer/plans}">📋 Workout Plans</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/trainer/plans/new}">➕ Create Plan</a>
+                        </li>
+                    </th:block>
+                    
+                    <th:block th:if="${session.userrole == 'member'}">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/member/dashboard}">🏠 Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/member/programs}">📚 Programs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/member/enrollments}">📝 My Enrollments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/member/workout-plans}">💪 Workout Plans</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/bmi/form}">📊 BMI Calculator</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/bmi/history}">🕒 BMI History</a>
+                        </li>
+                    </th:block>
+                    
+                    <th:block th:if="${session.userrole == null}">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/login}">🔐 Login</a>
+                        </li>
+                    </th:block>
+                </ul>
+                
+                <div class="navbar-right-section">
+                    <span th:if="${session.username != null}" class="user-info-badge">
+                        👤 <span th:text="${session.username}">User</span>
+                        <span class="role-badge" th:text="${session.userrole}">Role</span>
+                    </span>
+                    
+                    <a th:if="${session.username != null}" 
+                       th:href="@{/logout}" 
+                       class="btn-logout-nav">
+                        🚪 Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+<div th:fragment="flash-messages">
+    <div th:if="${successMessage}" 
+         class="alert alert-success alert-dismissible fade show" 
+         role="alert">
+        <strong>✅ Success!</strong> <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div th:if="${errorMessage}" 
+         class="alert alert-danger alert-dismissible fade show" 
+         role="alert">
+        <strong>❌ Error!</strong> <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div th:if="${flashMessage}" 
+         class="alert alert-info alert-dismissible fade show" 
+         role="alert">
+        <strong>ℹ️ Info:</strong> <span th:text="${flashMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+</body>
+</html>

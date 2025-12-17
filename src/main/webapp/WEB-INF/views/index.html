@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: common-head}"></head>
+<body>
+    <div th:replace="~{fragments :: main-menu}"></div>
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="display-4">Welcome to HealthHub@UTM</h1>
+                <p class="lead mt-3">Hello, <strong th:text="${session.username}">User</strong>!</p>
+                <hr class="my-4">
+                <p>Your health management platform</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">📊 BMI Calculator</h5>
+                                <p class="card-text">Calculate your Body Mass Index</p>
+                                <a th:href="@{/bmi/form}" class="btn btn-primary" target="_blank">Go to Calculator</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3" th:if="${session.userrole == 'admin'}">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">👥 Admin Panel</h5>
+                                <p class="card-text">Manage member records</p>
+                                <a th:href="@{/admin/person/list}" class="btn btn-info">Go to Admin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

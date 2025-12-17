@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>HealthHub@UTM : Member Form</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f6f8fb; 
+            padding: 20px; 
+        }
+        .container-custom {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: #17477c;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .btn-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        .required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{fragments :: main-menu}"></div>
+    
+    <div class="container mt-4">
+        <div th:replace="~{fragments :: flash-messages}"></div>
+        
+        <div class="container-custom">
+            <h1 th:text="${member.id == null} ? '➕ Create New Member' : '✏️ Edit Member'">
+                Member Form
+            </h1>
+            
+            <form th:action="${member.id == null} ? @{/admin/person/create} : @{/admin/person/update}" 
+                  th:object="${member}" 
+                  method="post">
+                
+                <input type="hidden" th:if="${member.id != null}" name="id" th:value="${member.id}">
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label required">Full Name</label>
+                    <input type="text" 
+                           id="name" 
+                           th:field="*{name}" 
+                           class="form-control" 
+                           placeholder="Enter member's full name"
+                           required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="username" class="form-label required">Username</label>
+                    <input type="text" 
+                           id="username" 
+                           th:field="*{username}" 
+                           class="form-control" 
+                           placeholder="Choose a unique username"
+                           th:readonly="${member.id != null}"
+                           required>
+                    <small class="text-muted" th:if="${member.id != null}">
+                        Username cannot be changed after creation
+                    </small>
+                </div>
+                
+                <div class="mb-3" th:if="${member.id == null}">
+                    <label for="password" class="form-label required">Password</label>
+                    <input type="password" 
+                           id="password" 
+                           th:field="*{password}" 
+                           class="form-control" 
+                           placeholder="Set initial password"
+                           required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label required">Email Address</label>
+                    <input type="email" 
+                           id="email" 
+                           th:field="*{email}" 
+                           class="form-control" 
+                           placeholder="member@example.com"
+                           required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="text" 
+                           id="phone" 
+                           th:field="*{phone}" 
+                           class="form-control"
+                           placeholder="01X-XXXXXXX">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="yearOfBirth" class="form-label required">Year of Birth</label>
+                    <input type="number" 
+                           id="yearOfBirth" 
+                           th:field="*{yearOfBirth}" 
+                           class="form-control" 
+                           min="1900" 
+                           max="2025" 
+                           placeholder="e.g., 1995"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label required">Gender</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               th:field="*{gender}" 
+                               value="Male" 
+                               id="genderMale">
+                        <label class="form-check-label" for="genderMale">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               th:field="*{gender}" 
+                               value="Female" 
+                               id="genderFemale">
+                        <label class="form-check-label" for="genderFemale">Female</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="memberType" class="form-label required">Member Type</label>
+                    <select id="memberType" 
+                            th:field="*{memberType}" 
+                            class="form-select" 
+                            required>
+                        <option value="">-- Select Member Type --</option>
+                        <option value="student">Student</option>
+                        <option value="staff">Staff</option>
+                        <option value="public">Public</option>
+                    </select>
+                </div>
+                
+                <div class="alert alert-info" th:if="${member.id != null}">
+                    <strong>ℹ️ Note:</strong> Password cannot be changed through this form. 
+                    BMI data is managed separately through the BMI Calculator.
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <span th:if="${member.id == null}">➕ Create Member</span>
+                        <span th:if="${member.id != null}">💾 Save Changes</span>
+                    </button>
+                    <a th:href="@{/admin/person/list}" class="btn btn-secondary btn-lg">
+                        ← Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

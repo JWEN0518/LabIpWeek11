@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | HealthHub@UTM</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        header {
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        li {
+            margin: 6px 0;
+        }
+        .role {
+            font-weight: bold;
+            color: #0066cc;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+    <h1>HealthHub@UTM – Dashboard</h1>
+
+    <p>
+        Logged in as:
+        <strong sec:authentication="name">username</strong>
+    </p>
+
+    <p>
+        Roles:
+        <span sec:authentication="authorities"></span>
+    </p>
+
+    <p>
+        <a th:href="@{/logout}">Logout</a>
+    </p>
+</header>
+
+<!-- ================= ADMIN ================= -->
+<section sec:authorize="hasRole('ADMIN')">
+    <h2>Admin Panel</h2>
+    <p class="role">Role: ADMIN</p>
+
+    <ul>
+        <li><a th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
+    </ul>
+</section>
+
+<!-- ================= MEMBER ================= -->
+<section sec:authorize="hasRole('MEMBER')">
+    <h2>Member Area</h2>
+    <p class="role">Role: MEMBER</p>
+
+    <ul>
+        <li><a th:href="@{/member/dashboard}">Member Dashboard</a></li>
+    </ul>
+</section>
+
+<!-- ================= TRAINER ================= -->
+<section sec:authorize="hasRole('TRAINER')">
+    <h2>Trainer Panel</h2>
+    <p class="role">Role: TRAINER</p>
+
+    <ul>
+        <li><a th:href="@{/trainer/dashboard}">Trainer Dashboard</a></li>
+    </ul>
+</section>
+
+<!-- ================= FALLBACK (SAFETY) ================= -->
+<section sec:authorize="!isAuthenticated()">
+    <h2>Guest</h2>
+    <p>Please <a th:href="@{/login}">login</a> to access the system.</p>
+</section>
+
+</body>
+</html>

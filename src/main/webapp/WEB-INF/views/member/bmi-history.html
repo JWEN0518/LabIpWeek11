@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments :: common-head}"></th:block>
+    <title>HealthHub@UTM : My BMI History</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif;
+            background-color: #f6f8fb; 
+            padding: 20px; 
+        }
+        .container-custom { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        h1 { 
+            text-align: center; 
+            color: #17477c; 
+            margin-bottom: 5px; 
+            font-weight: 700;
+        }
+        .subtitle { 
+            text-align: center; 
+            color: #6c757d; 
+            margin-bottom: 40px; 
+        }
+        
+        .latest-bmi-card {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+        .latest-bmi-value {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .latest-bmi-category {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .history-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .history-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .history-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge-underweight { background: #ffc107; color: #000; }
+        .badge-normal { background: #28a745; color: #fff; }
+        .badge-overweight { background: #fd7e14; color: #fff; }
+        .badge-obese { background: #dc3545; color: #fff; }
+        
+        .bmi-badge {
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div th:replace="~{fragments :: main-menu}"></div>
+    
+    <div class="container mt-4">
+        <div th:replace="~{fragments :: flash-messages}"></div>
+
+        <div class="container-custom">
+            <h1><i class="fas fa-chart-line"></i> My BMI History</h1>
+            <p class="subtitle">Track your Body Mass Index progress over time</p>
+
+            <div th:if="${bmiHistory != null and !bmiHistory.isEmpty()}" class="latest-bmi-card">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center">
+                        <h3 style="margin: 0;">Current BMI</h3>
+                        <div class="latest-bmi-value" th:text="${#numbers.formatDecimal(bmiHistory[0].bmi, 1, 2)}">
+                            24.5
+                        </div>
+                        <div class="latest-bmi-category" th:text="${bmiHistory[0].category}">
+                            Normal Weight
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Latest Measurement</h5>
+                        <p style="margin: 8px 0;">
+                            <strong>Date:</strong> 
+                            <span th:text="${#temporals.format(bmiHistory[0].recordedAt, 'dd MMM yyyy HH:mm')}">
+                                10 Dec 2025 14:30
+                            </span>
+                        </p>
+                        <p style="margin: 8px 0;">
+                            <strong>Weight:</strong> 
+                            <span th:text="${#numbers.formatDecimal(bmiHistory[0].weight, 1, 1)} + ' kg'">70.0 kg</span>
+                        </p>
+                        <p style="margin: 8px 0;">
+                            <strong>Height:</strong> 
+                            <span th:text="${#numbers.formatDecimal(bmiHistory[0].height, 1, 2)} + ' m'">1.75 m</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${bmiHistory == null or bmiHistory.isEmpty()}" class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> 
+                You haven't recorded any BMI measurements yet. 
+                <a th:href="@{/bmi/form}" class="alert-link">Click here to calculate your first BMI</a>
+            </div>
+
+            <div th:if="${bmiHistory != null and !bmiHistory.isEmpty()}" class="history-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date & Time</th>
+                            <th>Weight (kg)</th>
+                            <th>Height (m)</th>
+                            <th>BMI</th>
+                            <th>Category</th>
+                            <th>Age at Record</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="record, stat : ${bmiHistory}">
+                            <td th:text="${stat.count}">1</td>
+                            <td th:text="${#temporals.format(record.recordedAt, 'dd MMM yyyy HH:mm')}">
+                                10 Dec 2025 14:30
+                            </td>
+                            <td th:text="${#numbers.formatDecimal(record.weight, 1, 1)}">70.0</td>
+                            <td th:text="${#numbers.formatDecimal(record.height, 1, 2)}">1.75</td>
+                            <td>
+                                <strong th:text="${#numbers.formatDecimal(record.bmi, 1, 2)}">24.5</strong>
+                            </td>
+                            <td>
+                                <span class="bmi-badge"
+                                      th:classappend="${record.category == 'Underweight'} ? 'badge-underweight' : 
+                                                      (${record.category == 'Normal weight'} ? 'badge-normal' : 
+                                                      (${record.category == 'Overweight'} ? 'badge-overweight' : 
+                                                      'badge-obese'))"
+                                      th:text="${record.category}">
+                                      Normal Weight
+                                </span>
+                            </td>
+                            <td th:text="${record.age} + ' years'">25 years</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-4 mb-5">
+                <a th:href="@{/bmi/form}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-calculator"></i> Record New BMI
+                </a>
+                <a th:href="@{/member/dashboard}" class="btn btn-secondary btn-lg ms-2">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

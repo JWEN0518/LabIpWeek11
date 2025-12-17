@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>View Workout Plan</title>
+
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px; 
+            background-color: #f4f7f6; 
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding-bottom: 40px;
+        }
+
+        .info-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h1 { margin: 0; color: #333; font-size: 28px; }
+        .subtitle { color: #666; font-size: 0.9em; margin-top: 5px; }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .bg-active { background-color: #d1e7dd; color: #0f5132; }
+        .bg-ended { background-color: #e2e3e5; color: #383d41; }
+
+        .label { font-weight: bold; color: #555; display: block; margin-bottom: 3px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .value { font-size: 1.1rem; color: #222; margin-bottom: 15px; }
+        .big-value { font-size: 1.5rem; font-weight: bold; color: #007bff; }
+
+        .progress-box {
+            background-color: #f8f9fa;
+            border-left: 5px solid #28a745; 
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .bmi-box {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .text-content {
+            background-color: #fcfcfc;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap; 
+            color: #444;
+            min-height: 100px;
+        }
+
+        .btn-custom {
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-edit { background-color: #ffc107; color: #212529; }
+        .btn-back { background-color: #6c757d; color: white; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        .btn-custom:hover { opacity: 0.9; }
+
+        .btn-group-custom {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: main-menu}"></div>
+    
+    <div class="container mt-4">
+        <div th:replace="~{fragments :: flash-messages}"></div>
+
+<div class="container">
+
+    <div class="info-card">
+        <div class="header-section">
+            <div>
+                <h1><span th:text="${plan.name}">Plan Name</span></h1>
+                <div class="subtitle">Created on: <span th:text="${plan.createdDate}">2023-01-01</span></div>
+            </div>
+            
+            <span class="status-badge" 
+                  th:classappend="${plan.isActive} ? 'bg-active' : 'bg-ended'"
+                  th:text="${plan.isActive} ? 'ACTIVE PLAN' : 'PLAN ENDED'">
+                ACTIVE
+            </span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="label">Goal</span>
+                        <div class="value" th:text="${plan.goal}">Lose Weight</div>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="label">Duration</span>
+                        <div class="value">
+                            <span th:text="${plan.startDate}"></span> 
+                            &nbsp;➔&nbsp; 
+                            <span th:text="${plan.endDate}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <span class="label">Description</span>
+                    <p class="value" th:text="${plan.description}">No description provided.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="progress-box">
+                    <h5 style="margin-top:0; color: #28a745;">👤 Member Monitor</h5>
+                    <hr style="margin: 5px 0 15px 0;">
+                    
+                    <div th:if="${plan.member != null}">
+                        <div class="mb-2">
+                            <span class="label">Name</span>
+                            <strong style="font-size: 1.1em;" th:text="${plan.member.name}">John Doe</strong>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="bmi-box">
+                                    <span class="label">Weight</span>
+                                    <div class="big-value" style="font-size: 1.2em; color: #333;">
+                                        <span th:text="${plan.member.weight}">70</span> kg
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bmi-box">
+                                    <span class="label">Current BMI</span>
+                                    <div class="big-value" style="font-size: 1.2em;" 
+                                         th:text="${#numbers.formatDecimal(plan.member.bmi, 1, 1)}">
+                                        22.5
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 10px; text-align: center;">
+                            <span th:if="${plan.member.bmi < 18.5}" class="badge bg-warning text-dark">Underweight</span>
+                            <span th:if="${plan.member.bmi >= 18.5 && plan.member.bmi < 25}" class="badge bg-success">Normal Weight</span>
+                            <span th:if="${plan.member.bmi >= 25}" class="badge bg-danger">Overweight</span>
+                        </div>
+                    </div>
+
+                    <div th:if="${plan.member == null}" class="text-muted">
+                        <em>Unassigned</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <h4 style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">🏋️ Workout Instructions</h4>
+        
+        <div class="mb-4">
+            <span class="label">Detailed Exercises</span>
+            <div class="text-content" th:text="${plan.exercises}">
+                Day 1: Squats...
+            </div>
+        </div>
+
+        <div class="mb-2">
+            <span class="label">Trainer Notes</span>
+            <div class="text-content" style="background-color: #fffde7; border-color: #fff9c4;" th:text="${plan.notes}">
+                Remember to rest...
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group-custom">
+        <a th:href="@{/trainer/plans}" class="btn-custom btn-back">← Back to List</a>
+        
+        <a th:href="@{/trainer/plans/edit/{id}(id=${plan.id})}" class="btn-custom btn-edit">✎ Edit Plan</a>
+        
+        <form th:action="@{/trainer/plans/delete}" method="post" style="display:inline;">
+            <input type="hidden" name="id" th:value="${plan.id}" />
+            <button type="submit" class="btn-custom btn-delete" 
+                    onclick="return confirm('Are you sure you want to delete this plan?');">
+                🗑 Delete
+            </button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - HealthHub@UTM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">HealthHub@UTM Login</h3>
+
+                    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+                    
+                    <div th:if="${param.logoutMsg}" class="alert alert-success" role="alert">
+                        <span th:text="${param.logoutMsg}"></span>
+                    </div>
+
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                    
+                    <div class="text-center mt-3 pt-3 border-top">
+                        <p class="mb-0">Don't have an account? 
+                            <a th:href="@{/register}" class="text-decoration-none fw-bold">Register here</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mt-4 mt-md-0">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">📝 Test Credentials</h5>
+                    
+                    <p class="mb-2">
+                        <b>Role:</b> Admin<br>
+                        <b>User:</b> <code>admin</code><br>
+                        <b>Pass:</b> <code>admin123</code>
+                    </p>
+                    <hr>
+                    
+                    <p class="mb-2">
+                        <b>Role:</b> Trainer<br>
+                        <b>User:</b> <code>trainer</code><br>
+                        <b>Pass:</b> <code>trainer123</code>
+                    </p>
+                    <hr>
+                    
+                    <p class="mb-2">
+                        <b>Role:</b> Member (Student)<br>
+                        <b>User:</b> <code>alice</code><br>
+                        <b>Pass:</b> <code>alice123</code>
+                    </p>
+                    <hr>
+                    <p class="mb-2">
+                        <b>Role:</b> Member (Staff)<br>
+                        <b>User:</b> <code>bob</code><br>
+                        <b>Pass:</b> <code>bob123</code>
+                    </p>
+                    <hr>
+                    <p class="mb-2">
+                        <b>Role:</b> Member (Student)<br>
+                        <b>User:</b> <code>carol</code><br>
+                        <b>Pass:</b> <code>carol123</code>
+                    </p>
+                    <hr>
+                    <p class="mb-1">
+                        <b>Role:</b> Member (Staff)<br>
+                        <b>User:</b> <code>david</code><br>
+                        <b>Pass:</b> <code>david123</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

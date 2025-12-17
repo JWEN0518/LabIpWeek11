@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>HealthHub@UTM : Program Catalog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f8fb;
+            padding: 20px;
+        }
+
+        .container-custom {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #17477c;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        .program-card {
+            background: #fff;
+            border-left: 5px solid #007bff;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .program-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .program-name {
+            font-size: 1.6em;
+            color: #007bff;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .program-description {
+            font-size: 0.95em;
+            color: #555;
+            margin-bottom: 15px;
+            flex-grow: 1; 
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            margin-top: 10px;
+        }
+
+        .detail-item {
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .detail-item strong {
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .price {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .btn-enroll-link {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div th:replace="~{fragments :: main-menu}"></div>
+
+    <div class="container-custom mt-4">
+        <div th:replace="~{fragments :: flash-messages}"></div>
+
+        <h1><i class="fas fa-list-alt"></i> Available Fitness Programs</h1>
+        <p class="subtitle">Explore all programs offered by HealthHub@UTM. Click "Enroll" to join!</p>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" th:text="${error}"></div>
+
+        <div th:if="${programs == null or programs.isEmpty()}" class="alert alert-warning text-center">
+            There are currently no active programs available. Please check back later!
+        </div>
+
+        <div class="row">
+            <div th:each="program : ${programs}" class="col-md-6 col-lg-4 mb-4">
+                <div class="program-card h-100">
+                    <div>
+                        <div class="program-name" th:text="${program.name}">Summer Shred</div>
+                        <p class="program-description" th:text="${program.description}">
+                            A 12-week intensive program focused on fat loss and building lean muscle mass. Includes personalized nutrition guidance.
+                        </p>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="detail-item">
+                            Duration: <strong th:text="${program.durationWeeks} + ' weeks'">12 weeks</strong>
+                        </div>
+                        <div class="detail-item">
+                            Level: <span class="badge bg-primary" th:text="${program.difficultyLevel ?: 'General'}">Advanced</span>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="detail-item">
+                            Trainer: <strong th:text="${program.trainer != null ? program.trainer.name : 'N/A'}">Jane Smith</strong>
+                        </div>
+                        <div class="price" th:text="'RM ' + ${#numbers.formatDecimal(program.price, 1, 2)}">RM 250.00</div>
+                    </div>
+
+                    <a th:href="@{/member/enroll-form}" class="btn btn-outline-primary btn-enroll-link">
+                        Enroll Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

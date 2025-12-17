@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>HealthHub@UTM : Admin Dashboard</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f6f8fb; 
+            padding: 20px; 
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: main-menu}"></div>
+
+<div class="container mt-4">
+    <h1 th:text="${pageTitle}">Program Details</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-6 detail-item">
+            <strong>Category:</strong>
+            <span th:text="${program.category?.name}">Fitness</span>
+        </div>
+        <div class="col-md-6 detail-item">
+            <strong>Difficulty Level:</strong>
+            <span th:text="${program.difficultyLevel}">Intermediate</span>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 detail-item">
+            <strong>Duration:</strong>
+            <span th:text="${program.durationWeeks} + ' weeks'">8 weeks</span>
+        </div>
+        <div class="col-md-6 detail-item">
+            <strong>Price:</strong>
+            <span th:text="${#numbers.formatCurrency(program.price)}">$49.99</span>
+        </div>
+    </div>
+
+    <h2 class="h4 mt-4 mb-3" style="color: #007bff;">Program Description</h2>
+    <div class="description-box mb-4">
+        <p th:text="${program.description}">Detailed program description goes here.</p>
+    </div>
+
+    <h2 class="h4 mt-4 mb-3" style="color: #007bff;">Assigned Trainer Details</h2>
+    <div class="card detail-card">
+        <div class="card-body" th:if="${program.trainer != null}">
+            <p><strong>Name:</strong> <span th:text="${program.trainer.name}">Jane Doe</span></p>
+            <p><strong>Email:</strong> <span th:text="${program.trainer.email}">jane.doe@healthhub.com</span></p>
+            <p><strong>Contact:</strong> <span th:text="${program.trainer.phone}">+6012-3456789</span></p>
+        </div>
+        <div class="card-body text-muted" th:if="${program.trainer == null}">
+            <p>No trainer currently assigned to this program.</p>
+        </div>
+    </div>
+
+    <div class="mt-5 text-end">
+        <a th:href="@{/admin/programs/list}" class="btn btn-secondary btn-lg">
+            &larr; Back to Program List
+        </a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

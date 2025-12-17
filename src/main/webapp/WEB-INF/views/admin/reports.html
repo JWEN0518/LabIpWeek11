@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>HealthHub@UTM : Admin Dashboard</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f6f8fb; 
+            padding: 20px; 
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: main-menu}"></div>
+
+<div class="container mt-4">
+    <h1 th:text="${pageTitle}">System Summary & Reports</h1>
+    
+    <h2 class="h5 mb-4 text-primary">System Overviews</h2>
+    
+    <div class="row mb-5">
+        
+        <div class="col-md-4">
+            <div class="card report-card border-primary">
+                <div class="card-body">
+                    <p class="card-title">Total Registered Users</p>
+                    <h3 class="card-number" th:text="${totalUsers != null ? totalUsers : 0}">450</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card report-card border-success">
+                <div class="card-body">
+                    <p class="card-title">Active Fitness Programs</p>
+                    <h3 class="card-number" th:text="${totalPrograms != null ? totalPrograms : 0}">15</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card report-card border-info">
+                <div class="card-body">
+                    <p class="card-title">Total Program Enrollments</p>
+                    <h3 class="card-number" th:text="${totalEnrollments != null ? totalEnrollments : 0}">678</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h2 class="h5 mb-3 text-primary">Enrollment Details</h2>
+
+    <div class="card p-3">
+        <h3 class="h6 mb-3">Top 5 Most Popular Programs</h3>
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">#</th>
+                    <th>Program Name</th>
+                    <th>Category</th>
+                    <th style="width: 20%;" class="text-end">Enrollment Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="program, stat : ${popularPrograms}">
+                    <td th:text="${stat.count}">1</td>
+                    <td th:text="${program.name}">Summer Shred</td>
+                    <td th:text="${program.category?.name}">Strength</td>
+                    
+                    <td th:text="${enrollmentCounts.get(program.id)}" class="text-end">150</td> 
+                </tr>
+            </tbody>
+            <tfoot th:if="${popularPrograms == null or popularPrograms.isEmpty()}">
+                 <tr>
+                    <td colspan="4" class="text-center text-muted">No enrollment data available yet.</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div class="mt-5 pt-3 border-top text-muted">
+        <p class="small">Report generated on: <span th:text="${#dates.format(#dates.createNow(), 'dd MMMM yyyy HH:mm:ss')}"></span></p>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

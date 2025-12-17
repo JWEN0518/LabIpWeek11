@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>Create New Workout Plan</title>
+    
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f4f7f6; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background-color: white; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        }
+        
+        h1 { 
+            color: #333; 
+            border-bottom: 2px solid #007bff; 
+            padding-bottom: 10px; 
+            margin-bottom: 25px; 
+        }
+        
+        fieldset {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+        legend {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #007bff;
+            padding: 0 10px;
+            width: auto; 
+            float: none; 
+        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        
+        input[type="text"], input[type="date"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        
+        .error { color: #dc3545; font-size: 0.9em; margin-top: 5px; display: block; }
+        
+        .button-group { margin-top: 30px; text-align: right; }
+        .save-button { background-color: #28a745; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px; }
+        .cancel-button { background-color: #6c757d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; cursor: pointer; font-size: 16px; display: inline-block; }
+        .save-button:hover, .cancel-button:hover { opacity: 0.9; color: white; }
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments :: main-menu}"></div>
+    
+    <div class="container mt-4">
+        <div th:replace="~{fragments :: flash-messages}"></div>
+
+    <div class="container">
+        <h1 th:text="${workoutPlan.id == null} ? '📝 Create New Workout Plan' : '✏️ Edit Workout Plan'">
+            📝 Create New Workout Plan
+        </h1>
+        
+        <form th:action="${workoutPlan.id == null} ? @{/trainer/plans/save} : @{/trainer/plans/update}" 
+            th:object="${workoutPlan}" 
+            method="post">
+
+            <input type="hidden" th:field="*{id}" />
+            
+            <input type="hidden" th:field="*{createdDate}" />
+            <input type="hidden" th:field="*{isActive}" />
+            <fieldset>
+                <legend>Plan Details</legend>
+                <div class="form-group">
+                    <label for="name">Plan Name <span style="color:red;">*</span></label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="e.g., 8-Week Strength Cycle" required />
+                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" th:field="*{description}" placeholder="Brief overview of the plan's methodology..."></textarea>
+                </div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Assignment & Goal</legend>
+                <div class="form-group">
+                    <label for="personId">Assign to Member <span style="color:red;">*</span></label>
+                    
+                    <select id="personId" name="personId" required>
+                        <option value="" disabled selected>-- Select Member --</option>
+                        <option th:each="member : ${members}" 
+                                th:value="${member.id}" 
+                                th:text="${member.name}">John Doe</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="goal">Goal</label>
+                    <input type="text" id="goal" th:field="*{goal}" placeholder="e.g., Run a 5K, Lose 5kg" />
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Schedule</legend>
+                <div class="row"> <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" th:field="*{startDate}" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate" th:field="*{endDate}" />
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Workout Content</legend>
+                <div class="form-group">
+                    <label for="exercises">Exercises (Detailed Plan)</label>
+                    <textarea id="exercises" th:field="*{exercises}" placeholder="Day 1: Squats (3x10), Bench Press (3x10)..." style="min-height: 150px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Trainer Notes</label>
+                    <textarea id="notes" th:field="*{notes}" placeholder="Remind client about nutrition, watch form..."></textarea>
+                </div>
+            </fieldset>
+
+            <div class="button-group">
+                <button type="submit" class="save-button">Save Plan</button>
+                <a th:href="@{/trainer/plans}" class="cancel-button">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

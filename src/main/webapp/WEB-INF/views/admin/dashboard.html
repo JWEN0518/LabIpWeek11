@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:insert="~{fragments :: common-head}"></div>
+    <title>HealthHub@UTM : Admin Dashboard</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f6f8fb; 
+            padding: 20px; 
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments :: main-menu}"></div>
+
+    <div class="container mt-4">
+        <div class="card">  
+            <div class="card-header">
+                <span>User Profile</span>
+            </div>
+            <div class="card-body">
+                <h5>Profile Information</h5>
+                <hr>
+                <p><strong>Username:</strong> <span th:text="${session.username}">User</span></p>
+                <p><strong>Role:</strong> <span th:text="${session.userrole}">Role</span></p>
+                
+                <hr>
+                <h6>Quick Actions</h6>
+                <div class="d-grid gap-2">
+                    
+                    
+                    <a th:if="${session.userrole == 'admin'}" 
+                       th:href="@{/admin/person/list}" class="btn btn-outline-primary">
+                        Manage Members
+                    </a>
+
+                    <a th:if="${session.userrole == 'admin'}" 
+                       th:href="@{/admin/categories/list}" class="btn btn-outline-info">
+                        Manage Categories
+                    </a>
+
+                    <a th:if="${session.userrole == 'admin'}" 
+                       th:href="@{/admin/programs/list}" class="btn btn-outline-warning">
+                        Manage Programs
+                    </a>
+
+                    <a th:if="${session.userrole == 'admin'}" 
+                       th:href="@{/admin/reports}" class="btn btn-outline-success">
+                        System Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
