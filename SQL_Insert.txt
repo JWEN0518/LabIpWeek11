@@ -1,0 +1,154 @@
+-- =====================================================
+-- HEALTHHUB@UTM - SAMPLE DATA SQL SCRIPT
+-- =====================================================
+-- Execute this script in phpMyAdmin to populate test data
+-- Make sure to execute in the correct order due to foreign key constraints
+
+-- =====================================================
+-- 1. ADMIN TABLE (1 row)
+-- =====================================================
+INSERT INTO admin (name, username, password, email, phone, is_active) VALUES
+('Admin User', 'admin', 'admin123', 'admin@healthhub.utm.my', '0112222222', 1);
+
+-- =====================================================
+-- 2. TRAINER TABLE (1 row)
+-- =====================================================
+INSERT INTO trainer (name, email, phone, specialization, certification, years_of_experience, bio, username, password, is_active) VALUES
+('John Trainer', 'trainer@healthhub.utm.my', '0113333333', 'Fitness & Strength Training', 'Certified Personal Trainer (CPT)', 5, 'Experienced fitness trainer specializing in strength and conditioning programs.', 'trainer', 'trainer123', 1);
+
+-- =====================================================
+-- 3. MEMBER TABLE (4 rows)
+-- =====================================================
+INSERT INTO member (name, username, password, email, phone, member_type, year_of_birth, gender, is_active) VALUES
+('Alice Johnson', 'alice', 'alice123', 'alice@student.utm.my', '0111234567', 'student', 2002, 'Female', 1),
+('Bob Smith', 'bob', 'bob123', 'bob@staff.utm.my', '0112345678', 'staff', 1995, 'Male', 1),
+('Carol Lee', 'carol', 'carol123', 'carol@student.utm.my', '0113456789', 'student', 2003, 'Female', 1),
+('David Wong', 'david', 'david123', 'david@staff.utm.my', '0114567890', 'staff', 1990, 'Male', 1);
+
+-- =====================================================
+-- 4. CATEGORY TABLE (4 rows)
+-- =====================================================
+INSERT INTO category (name, description) VALUES
+('Cardio', 'Cardiovascular exercises to improve heart health and endurance'),
+('Strength', 'Weight training and resistance exercises to build muscle mass'),
+('Flexibility', 'Stretching and mobility exercises to improve range of motion'),
+('HIIT', 'High-Intensity Interval Training for maximum calorie burn');
+
+-- =====================================================
+-- 5. PROGRAM TABLE (4 rows)
+-- =====================================================
+-- Note: trainer_id = 1 (John Trainer), category_id varies
+INSERT INTO program (name, description, duration_weeks, price, difficulty_level, max_participants, category_id, trainer_id, is_active) VALUES
+('Beginner Cardio Blast', 'A 4-week beginner-friendly cardio program to kickstart your fitness journey', 4, 50.00, 'Beginner', 20, 1, 1, 1),
+('Advanced Strength Training', 'An intensive 8-week program for experienced lifters', 8, 120.00, 'Advanced', 15, 2, 1, 1),
+('Yoga & Flexibility', 'Improve flexibility and reduce stress through yoga practice', 6, 80.00, 'Beginner', 25, 3, 1, 1),
+('HIIT Fat Burner', 'High-intensity workouts to maximize fat loss in just 30 minutes', 5, 95.00, 'Intermediate', 12, 4, 1, 1);
+
+-- =====================================================
+-- 6. BMI_RECORD TABLE (4 rows)
+-- =====================================================
+-- Distributed across different members
+INSERT INTO bmi_record (name, year_of_birth, weight, height, gender, interests, recorded_at, member_id) VALUES
+('Alice Johnson', 2002, 55.5, 1.65, 'Female', 'Sports,Travel', '2025-12-01 10:30:00', 1),
+('Bob Smith', 1995, 78.0, 1.78, 'Male', 'Technology,Sports', '2025-12-02 14:15:00', 2),
+('Carol Lee', 2003, 52.0, 1.60, 'Female', 'Entertainment,Travel', '2025-12-03 09:45:00', 3),
+('David Wong', 1990, 85.5, 1.80, 'Male', 'Business,Sports', '2025-12-04 16:20:00', 4);
+
+-- =====================================================
+-- 7. ENROLLMENT TABLE (4 rows)
+-- =====================================================
+-- Each member enrolled in one program
+INSERT INTO enrollment (member_id, program_id, enrollment_date, start_date, end_date, status, payment_status, amount_paid, notes) VALUES
+(1, 1, '2025-12-01', '2025-12-08', '2026-01-05', 'Active', 'Paid', 50.00, 'Student discount applied'),
+(2, 2, '2025-12-02', '2025-12-09', '2026-02-03', 'Active', 'Paid', 120.00, NULL),
+(3, 3, '2025-12-03', '2025-12-10', '2026-01-21', 'Active', 'Pending', 80.00, 'Payment installment plan'),
+(4, 4, '2025-12-04', '2025-12-11', '2026-01-15', 'Active', 'Paid', 95.00, 'Staff member enrolled');
+
+-- =====================================================
+-- 8. WORKOUT_PLAN TABLE (4 rows)
+-- =====================================================
+-- Each member gets one workout plan from the trainer
+INSERT INTO workout_plan (name, description, member_id, trainer_id, created_date, start_date, end_date, goal, exercises, notes, is_active) VALUES
+('Alice Cardio Journey', 'Personalized cardio plan for Alice to improve endurance', 1, 1, '2025-12-01', '2025-12-08', '2026-01-05', 'Run 5km without stopping', 
+'Day 1: Treadmill 20min (5.0 speed)
+Day 2: Cycling 30min (moderate pace)
+Day 3: Rest / Light stretching
+Day 4: Treadmill 25min (5.5 speed)
+Day 5: Elliptical 20min
+Day 6: Outdoor jog 3km
+Day 7: Rest', 
+'Focus on breathing technique. Gradually increase intensity.', 1),
+
+('Bob Power Building', 'Strength program focused on compound lifts', 2, 1, '2025-12-02', '2025-12-09', '2026-02-03', 'Increase bench press to 100kg', 
+'Day 1: Chest & Triceps
+- Bench Press 4x8
+- Incline DB Press 3x10
+- Tricep Dips 3x12
+
+Day 2: Back & Biceps
+- Deadlift 4x6
+- Pull-ups 3x10
+- Barbell Rows 3x10
+
+Day 3: Rest
+
+Day 4: Legs
+- Squats 4x8
+- Leg Press 3x12
+- Lunges 3x10 each leg
+
+Day 5: Shoulders
+- Military Press 4x8
+- Lateral Raises 3x12
+- Face Pulls 3x15
+
+Day 6: Active Recovery - Light cardio
+Day 7: Rest', 
+'Ensure proper form before increasing weight. Track all lifts.', 1),
+
+('Carol Flexibility Flow', 'Yoga-based flexibility improvement program', 3, 1, '2025-12-03', '2025-12-10', '2026-01-21', 'Touch toes comfortably', 
+'Day 1: Full Body Stretching Routine (30min)
+Day 2: Lower Body Focus - Hamstrings & Hip Flexors
+Day 3: Upper Body Focus - Shoulders & Back
+Day 4: Rest / Meditation
+Day 5: Dynamic Stretching Session
+Day 6: Yin Yoga Practice (45min)
+Day 7: Rest', 
+'Hold each stretch for 30 seconds minimum. Never force movements.', 1),
+
+('David HIIT Challenge', 'High-intensity fat loss program', 4, 1, '2025-12-04', '2025-12-11', '2026-01-15', 'Lose 5kg body fat', 
+'Day 1: Full Body HIIT
+- Burpees 30sec on / 30sec off (5 rounds)
+- Mountain Climbers 30sec on / 30sec off (5 rounds)
+- Jump Squats 30sec on / 30sec off (5 rounds)
+
+Day 2: Rest / Light walk
+
+Day 3: Upper Body HIIT
+- Push-ups 40sec on / 20sec off (4 rounds)
+- Plank to Downward Dog 40sec on / 20sec off (4 rounds)
+- Shoulder Taps 40sec on / 20sec off (4 rounds)
+
+Day 4: Rest / Light walk
+
+Day 5: Lower Body HIIT
+- Jump Lunges 40sec on / 20sec off (4 rounds)
+- Box Jumps 40sec on / 20sec off (4 rounds)
+- Wall Sit 40sec on / 20sec off (4 rounds)
+
+Day 6: Active Recovery - Steady-state cardio 30min
+Day 7: Rest', 
+'Monitor heart rate. Stay hydrated. Focus on nutrition for best results.', 1);
+
+-- =====================================================
+-- VERIFICATION QUERIES
+-- =====================================================
+-- Run these to verify data was inserted correctly:
+-- SELECT COUNT(*) FROM admin;           -- Should return 1
+-- SELECT COUNT(*) FROM trainer;         -- Should return 1
+-- SELECT COUNT(*) FROM member;          -- Should return 4
+-- SELECT COUNT(*) FROM category;        -- Should return 4
+-- SELECT COUNT(*) FROM program;         -- Should return 4
+-- SELECT COUNT(*) FROM bmi_record;      -- Should return 4
+-- SELECT COUNT(*) FROM enrollment;      -- Should return 4
+-- SELECT COUNT(*) FROM workout_plan;    -- Should return 4
